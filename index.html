@@ -233,7 +233,7 @@
       <a class="lv1" href="#overview">一、研究流程總覽</a>
       <a class="lv1" href="#build">二、階段一：建構</a>
       <a class="lv2" href="#s1">2-1 次級資料蒐集</a>
-      <a class="lv2" href="#s2">2-2 初級資料蒐集</a>
+      <a class="lv2" href="#s2">2-2 社群語料蒐集</a>
       <a class="lv2" href="#s3">2-3 劇本生成</a>
       <a class="lv2" href="#s4">2-4 AI 角色建立</a>
       <a class="lv2" href="#s5">2-5 建構成果</a>
@@ -269,7 +269,7 @@
       <div class="tablecard"><table>
         <thead><tr><th>階段</th><th>目標</th><th>方法</th><th>對象 / 樣本</th></tr></thead>
         <tbody>
-          <tr><td><b>階段一<br>建構</b></td><td>建立穩定、可被訪談的 AI Persona</td><td>四階段五步驟流程（次級資料 → 初級資料 → 劇本 → GPTs 部署）</td><td>研究者 + Gemini / ChatGPT</td></tr>
+          <tr><td><b>階段一<br>建構</b></td><td>建立穩定、可被訪談的 AI Persona</td><td>四階段五步驟流程（次級資料 → 社群語料 → 劇本 → GPTs 部署）</td><td>研究者 + Gemini / ChatGPT</td></tr>
           <tr><td><b>階段二 (2A)<br>劇本方法論驗證</b></td><td>檢驗 AI Persona 的穩定性與差異性</td><td>走查與觀察 + 問卷（Google 表單）</td><td>6 位資深設計師測試者</td></tr>
           <tr><td><b>階段二 (2B)<br>AI 與真人比較</b></td><td>比較 AI Persona 與真人在語言表現上的結構性差異</td><td>模擬驗證訪談 + 六維度語言編碼</td><td>1 位 AI Persona + 2 位真人受訪者</td></tr>
         </tbody>
@@ -285,7 +285,7 @@
         <tbody>
           <tr><td>第 1 階段<br>次級資料</td><td>1-1 初步探索</td><td>建立族群全貌，識別兩條核心軸線與四種用戶類型</td><td>Gemini DR</td><td>探索性研究報告</td></tr>
           <tr><td>第 1 階段<br>次級資料</td><td>1-2 深度探索</td><td>依兩條軸線建立十字象限，產出四種用戶輪廓</td><td>Gemini DR</td><td>深度探索分析報告</td></tr>
-          <tr><td>第 2 階段<br>初級資料</td><td>社群資料蒐集</td><td>從社群平台擷取第一人稱語料</td><td>ChatGPT DR</td><td>社群貼文列表</td></tr>
+          <tr><td>第 2 階段<br>社群語料</td><td>社群資料蒐集</td><td>從社群平台擷取第一人稱語料</td><td>ChatGPT DR</td><td>社群貼文列表</td></tr>
           <tr><td>第 3 階段<br>劇本生成</td><td>六維度劇本</td><td>整合三份資料，撰寫 7500 字劇本</td><td>Gemini 思考型</td><td>7500 字劇本</td></tr>
           <tr><td>第 4 階段<br>角色建立</td><td>部署 GPTs</td><td>加上行為限制與角色內化指令並部署</td><td>ChatGPT GPTs</td><td>可互動 AI Persona</td></tr>
         </tbody>
@@ -304,7 +304,7 @@
       <div class="prompt" data-prompt="p1"></div>
 
       <h4>步驟 1-2　深度探索</h4>
-      <p>根據初步探索識別的兩條核心軸線建立十字象限，將族群拆為四種用戶類型並撰寫完整輪廓，作為一手資料蒐集的方向指引與劇本生成的素材。</p>
+      <p>根據初步探索識別的兩條核心軸線建立十字象限，將族群拆為四種用戶類型並撰寫完整輪廓，作為社群語料蒐集的方向指引與劇本生成的素材。</p>
       <div class="stepmeta">
         <span class="pill ai">AI · Gemini Deep Research</span>
         <span class="pill"><b>產出：</b>深度探索分析報告</span>
@@ -313,7 +313,7 @@
       <div class="prompt" data-prompt="p2"></div>
 
       <!-- 2-2 -->
-      <h3 id="s2">2-2 第 2 階段：初級資料蒐集</h3>
+      <h3 id="s2">2-2 第 2 階段：社群語料蒐集</h3>
       <p>從社群平台擷取真實使用者的第一人稱敘事。此階段<b>嚴格限制 AI 僅進行資料擷取，不做主觀分析或改寫</b>，以保留原始語彙、句型與社群用語，確保後續劇本的語言風格具備真實性。</p>
       <div class="note"><b>備援方案：</b>此階段 AI 擷取結果穩定性較低，可能因平台限制或搜尋變動而無法取得理想內容。若 AI 擷取失靈，研究者可改採手動方式自行蒐集符合條件的貼文，再交由 AI 進行語料整理，同樣可達成目標。</div>
       <div class="stepmeta">
