@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>研究方法附錄｜AI Persona 能取代真人訪談嗎</title>
+<meta name="description" content="碩士論文《AI Persona 能取代真人訪談嗎》研究方法附錄——六維度劇本方法論的完整建構流程、可複製 prompt 模板、驗證問卷與訪談訪綱。簡潔安，國立臺灣科技大學設計系。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#fbfcfb; --surface:#ffffff; --ink:#1c2420; --muted:#5e6b63;
+    --faint:#8a958d; --line:#e4e9e5; --line2:#eef2ef;
+    --accent:#0a9d63; --accent-bright:#0FC77B; --accent-soft:#e7f7ef;
+    --code-bg:#1d2622; --code-ink:#e9f0ec; --code-line:#33403a;
+    --radius:14px; --maxw:820px;
+    --shadow:0 1px 2px rgba(28,36,32,.04), 0 8px 28px rgba(28,36,32,.06);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth; scroll-padding-top:84px;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Noto Sans TC", system-ui, -apple-system, sans-serif;
+    font-size:16.5px; line-height:1.85; letter-spacing:.01em;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--accent); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+
+  /* ===== top bar (mobile nav trigger) ===== */
+  .topbar{
+    position:sticky; top:0; z-index:40; display:none;
+    background:rgba(251,252,251,.9); backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line); padding:12px 18px;
+    align-items:center; justify-content:space-between;
+  }
+  .topbar b{font-size:15px;}
+  .menu-btn{
+    border:1px solid var(--line); background:var(--surface); color:var(--ink);
+    border-radius:9px; padding:7px 12px; font-size:14px; cursor:pointer; font-family:inherit;
+  }
+
+  /* ===== layout ===== */
+  .wrap{max-width:1240px; margin:0 auto; display:grid;
+    grid-template-columns:264px minmax(0,1fr); gap:0;}
+  /* sidebar TOC */
+  .toc{
+    position:sticky; top:0; align-self:start; height:100vh; overflow-y:auto;
+    padding:40px 22px 40px 32px; border-right:1px solid var(--line);
+    font-size:14px;
+  }
+  .toc .brand{font-weight:900; font-size:15px; letter-spacing:.02em; margin-bottom:4px; color:var(--ink);}
+  .toc .brand-sub{color:var(--faint); font-size:12.5px; margin-bottom:24px; line-height:1.5;}
+  .toc nav a{
+    display:block; color:var(--muted); padding:5px 0 5px 12px;
+    border-left:2px solid transparent; line-height:1.5;
+  }
+  .toc nav a:hover{color:var(--ink); text-decoration:none;}
+  .toc nav a.lv1{font-weight:700; margin-top:14px; color:var(--ink); border-left-color:var(--line);}
+  .toc nav a.lv2{font-size:13px; padding-left:24px;}
+  .toc nav a.active{color:var(--accent); border-left-color:var(--accent); background:var(--accent-soft);}
+
+  /* main */
+  main{padding:0; min-width:0;}
+  .inner{max-width:var(--maxw); margin:0 auto; padding:60px 40px 120px;}
+
+  /* hero */
+  .hero{margin-bottom:18px;}
+  .hero .kicker{
+    display:inline-block; font-size:12.5px; font-weight:700; letter-spacing:.12em;
+    color:var(--accent); background:var(--accent-soft); padding:5px 12px; border-radius:999px;
+    margin-bottom:20px;
+  }
+  h1{
+    font-family:"Noto Serif TC", serif; font-weight:700; font-size:34px;
+    line-height:1.35; margin:0 0 16px; letter-spacing:.01em;
+  }
+  .hero .lede{font-size:17px; color:var(--muted); line-height:1.8; margin:0 0 24px;}
+  .meta{
+    display:flex; flex-wrap:wrap; gap:8px 22px; font-size:14px; color:var(--faint);
+    padding-top:22px; border-top:1px solid var(--line);
+  }
+  .meta b{color:var(--ink); font-weight:500;}
+
+  /* sections */
+  section{margin-top:64px; scroll-margin-top:80px;}
+  h2{
+    font-family:"Noto Serif TC", serif; font-size:25px; font-weight:700;
+    margin:0 0 6px; padding-bottom:14px; border-bottom:2px solid var(--ink);
+    display:flex; align-items:baseline; gap:12px;
+  }
+  h2 .num{font-size:15px; color:var(--accent); font-family:"JetBrains Mono",monospace; font-weight:500;}
+  h3{font-size:19px; font-weight:700; margin:40px 0 4px; letter-spacing:.01em;}
+  h4{font-size:16px; font-weight:700; margin:28px 0 2px; color:var(--ink);}
+  p{margin:14px 0;}
+  .section-intro{color:var(--muted); margin-top:14px;}
+
+  /* meta line under a step */
+  .stepmeta{
+    display:flex; flex-wrap:wrap; gap:6px 8px; margin:14px 0;
+  }
+  .pill{
+    font-size:13px; padding:4px 11px; border-radius:8px; background:var(--line2);
+    color:var(--muted); border:1px solid var(--line);
+  }
+  .pill b{color:var(--ink); font-weight:700;}
+  .pill.ai{background:var(--accent-soft); border-color:#cdebda; color:var(--accent);}
+
+  /* callout */
+  .note{
+    background:var(--surface); border:1px solid var(--line); border-left:3px solid var(--accent);
+    border-radius:10px; padding:14px 18px; margin:18px 0; font-size:15px; color:var(--muted);
+    box-shadow:var(--shadow);
+  }
+  .note b{color:var(--ink);}
+
+  /* tables */
+  .tablecard{overflow-x:auto; margin:20px 0; border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow);}
+  table{border-collapse:collapse; width:100%; font-size:14.5px; background:var(--surface);}
+  th,td{text-align:left; padding:12px 15px; border-bottom:1px solid var(--line2); vertical-align:top; line-height:1.65;}
+  th{background:#f4f7f5; font-weight:700; color:var(--ink); white-space:nowrap; border-bottom:1px solid var(--line);}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:hover td{background:#fafcfb;}
+  td.c{text-align:center; white-space:nowrap; color:var(--faint); font-family:"JetBrains Mono",monospace;}
+
+  /* prompt block */
+  .prompt{margin:16px 0 26px; border-radius:var(--radius); overflow:hidden; border:1px solid var(--code-line); box-shadow:var(--shadow);}
+  .prompt-head{
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    background:#161e1a; color:#cfe; padding:10px 14px; border-bottom:1px solid var(--code-line);
+  }
+  .prompt-head .lbl{font-size:13px; color:#9fb3a9; font-family:"JetBrains Mono",monospace; letter-spacing:.03em;}
+  .copy-btn{
+    border:1px solid var(--code-line); background:#222d28; color:var(--accent-bright);
+    border-radius:8px; padding:6px 14px; font-size:13px; font-weight:700; cursor:pointer;
+    font-family:inherit; display:flex; align-items:center; gap:6px; transition:.15s;
+  }
+  .copy-btn:hover{background:#2b3631; border-color:var(--accent);}
+  .copy-btn.done{color:#fff; background:var(--accent);}
+  pre{
+    margin:0; background:var(--code-bg); color:var(--code-ink);
+    padding:18px 18px; overflow-x:auto; font-size:13.5px; line-height:1.7;
+    font-family:"JetBrains Mono", ui-monospace, monospace; max-height:460px; overflow-y:auto;
+    white-space:pre-wrap; word-break:break-word;
+  }
+  pre::-webkit-scrollbar{width:10px; height:10px;}
+  pre::-webkit-scrollbar-thumb{background:#3c4942; border-radius:6px;}
+
+  /* persona cards */
+  .personas{display:grid; grid-template-columns:1fr 1fr; gap:18px; margin:22px 0;}
+  .pcard{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:22px; box-shadow:var(--shadow);}
+  .pcard .tag{font-size:12.5px; font-weight:700; letter-spacing:.06em; padding:4px 10px; border-radius:999px; display:inline-block; margin-bottom:12px;}
+  .pcard.emo .tag{background:#fdeef0; color:#d4567a;}
+  .pcard.rat .tag{background:var(--accent-soft); color:var(--accent);}
+  .pcard h4{margin:0 0 8px; font-size:20px; font-family:"Noto Serif TC",serif;}
+  .pcard p{margin:0; font-size:14.5px; color:var(--muted); line-height:1.8;}
+
+  /* dimension grid */
+  .dims{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:20px 0;}
+  .dim{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:16px 18px; box-shadow:var(--shadow);}
+  .dim .dn{font-weight:700; font-size:15px; margin-bottom:4px;}
+  .dim .dn span{color:var(--accent); font-family:"JetBrains Mono",monospace; font-size:13px; margin-right:7px;}
+  .dim p{margin:0; font-size:13.5px; color:var(--muted); line-height:1.7;}
+
+  /* interview guide */
+  .guide-block{border-left:3px solid var(--line); padding-left:20px; margin:24px 0;}
+  .guide-block h4{margin-top:0;}
+  .flow-tag{font-family:"JetBrains Mono",monospace; font-size:12px; color:var(--accent); background:var(--accent-soft); padding:2px 8px; border-radius:6px; margin-left:6px;}
+  ol, ul{padding-left:22px;}
+  li{margin:5px 0;}
+  .obs{font-size:14px; color:var(--faint); background:var(--line2); border-radius:8px; padding:10px 14px; margin-top:10px;}
+  .obs b{color:var(--muted);}
+  .quote{font-style:normal; background:var(--accent-soft); border-radius:10px; padding:14px 18px; margin:14px 0; color:#234; font-size:15px;}
+
+  /* footnotes */
+  .footnotes{counter-reset:fn; font-size:14.5px; color:var(--muted);}
+  .footnotes li{margin:10px 0; line-height:1.8;}
+
+  footer{border-top:1px solid var(--line); padding:34px 0 0; margin-top:80px; font-size:13.5px; color:var(--faint); line-height:1.8;}
+
+  /* mobile */
+  #scrim{display:none;}
+  @media (max-width:1000px){
+    .topbar{display:flex;}
+    .wrap{grid-template-columns:1fr;}
+    .toc{
+      position:fixed; top:0; left:0; width:280px; height:100vh; background:var(--surface);
+      transform:translateX(-100%); transition:transform .25s ease; z-index:60; box-shadow:var(--shadow);
+    }
+    .toc.open{transform:translateX(0);}
+    #scrim.show{display:block; position:fixed; inset:0; background:rgba(0,0,0,.35); z-index:50;}
+    .inner{padding:36px 22px 100px;}
+    h1{font-size:27px;}
+    .personas,.dims{grid-template-columns:1fr;}
+  }
+  @media print{
+    .toc,.topbar,.copy-btn{display:none;} .wrap{display:block;}
+    pre{max-height:none; white-space:pre-wrap;} body{font-size:11pt;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <b>研究方法附錄</b>
+  <button class="menu-btn" onclick="toggleToc()">目錄 ☰</button>
+</div>
+
+<div class="wrap">
+  <aside class="toc" id="toc">
+    <div class="brand">AI Persona 研究方法</div>
+    <div class="brand-sub">碩士論文附錄｜簡潔安<br>台科大設計系</div>
+    <nav id="nav">
+      <a class="lv1" href="#overview">一、研究流程總覽</a>
+      <a class="lv1" href="#build">二、階段一：建構</a>
+      <a class="lv2" href="#s1">2-1 次級資料蒐集</a>
+      <a class="lv2" href="#s2">2-2 初級資料蒐集</a>
+      <a class="lv2" href="#s3">2-3 劇本生成</a>
+      <a class="lv2" href="#s4">2-4 AI 角色建立</a>
+      <a class="lv2" href="#s5">2-5 建構成果</a>
+      <a class="lv1" href="#v2a">三、階段 2A：方法論驗證</a>
+      <a class="lv2" href="#q2a">3-1 問卷</a>
+      <a class="lv2" href="#walk">3-2 走查與觀察</a>
+      <a class="lv1" href="#v2b">四、階段 2B：AI 與真人比較</a>
+      <a class="lv2" href="#guide">4-1 訪談訪綱</a>
+      <a class="lv1" href="#notes">五、附註</a>
+    </nav>
+  </aside>
+  <div id="scrim" onclick="toggleToc()"></div>
+
+  <main>
+  <div class="inner">
+
+    <div class="hero">
+      <span class="kicker">碩士論文 · 研究方法附錄</span>
+      <h1>AI Persona 能取代真人訪談嗎？<br>研究方法完整附錄</h1>
+      <p class="lede">本頁完整呈現「六維度劇本方法論」的建構流程、五個階段可一鍵複製的 prompt 模板、AI Persona 驗證問卷，以及 AI 與真人比較訪談的完整訪綱，作為論文正文的延伸資料。</p>
+      <div class="meta">
+        <span>研究生　<b>簡潔安</b></span>
+        <span>指導教授　<b>唐玄輝</b></span>
+        <span>國立臺灣科技大學設計系</span>
+      </div>
+    </div>
+
+    <!-- ============ 一、總覽 ============ -->
+    <section id="overview">
+      <h2><span class="num">01</span>研究流程總覽</h2>
+      <p class="section-intro">本研究採用<b>設計科學研究方法</b>（Design Science Research, DSR），分為建構與驗證兩大階段。</p>
+      <div class="tablecard"><table>
+        <thead><tr><th>階段</th><th>目標</th><th>方法</th><th>對象 / 樣本</th></tr></thead>
+        <tbody>
+          <tr><td><b>階段一<br>建構</b></td><td>建立穩定、可被訪談的 AI Persona</td><td>四階段五步驟流程（次級資料 → 初級資料 → 劇本 → GPTs 部署）</td><td>研究者 + Gemini / ChatGPT</td></tr>
+          <tr><td><b>階段二 (2A)<br>劇本方法論驗證</b></td><td>檢驗 AI Persona 的穩定性與差異性</td><td>走查與觀察 + 問卷（Google 表單）</td><td>6 位資深設計師測試者</td></tr>
+          <tr><td><b>階段二 (2B)<br>AI 與真人比較</b></td><td>比較 AI Persona 與真人在語言表現上的結構性差異</td><td>模擬驗證訪談 + 六維度語言編碼</td><td>1 位 AI Persona + 2 位真人受訪者</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <!-- ============ 二、建構 ============ -->
+    <section id="build">
+      <h2><span class="num">02</span>階段一：AI Persona 建構</h2>
+      <p class="section-intro"><b>核心理念：</b>透過 AI 建立一個「永不下線的用戶」。<br><b>研究情境：</b>台灣 Z 世代 ETF 投資者（高情緒涉入、社群影響大、理性與感性持續拉扯）。整體採四階段五步驟流程。</p>
+      <div class="tablecard"><table>
+        <thead><tr><th>階段</th><th>步驟</th><th>目標</th><th>AI 模型</th><th>產出</th></tr></thead>
+        <tbody>
+          <tr><td>第 1 階段<br>次級資料</td><td>1-1 初步探索</td><td>建立族群全貌，識別兩條核心軸線與四種用戶類型</td><td>Gemini DR</td><td>探索性研究報告</td></tr>
+          <tr><td>第 1 階段<br>次級資料</td><td>1-2 深度探索</td><td>依兩條軸線建立十字象限，產出四種用戶輪廓</td><td>Gemini DR</td><td>深度探索分析報告</td></tr>
+          <tr><td>第 2 階段<br>初級資料</td><td>社群資料蒐集</td><td>從社群平台擷取第一人稱語料</td><td>ChatGPT DR</td><td>社群貼文列表</td></tr>
+          <tr><td>第 3 階段<br>劇本生成</td><td>六維度劇本</td><td>整合三份資料，撰寫 7500 字劇本</td><td>Gemini 思考型</td><td>7500 字劇本</td></tr>
+          <tr><td>第 4 階段<br>角色建立</td><td>部署 GPTs</td><td>加上行為限制與角色內化指令並部署</td><td>ChatGPT GPTs</td><td>可互動 AI Persona</td></tr>
+        </tbody>
+      </table></div>
+
+      <!-- 2-1 -->
+      <h3 id="s1">2-1 第 1 階段：次級資料蒐集</h3>
+
+      <h4>步驟 1-1　初步探索</h4>
+      <p>在對研究主題完全陌生的狀態下，透過 AI 深度搜尋建立對目標族群的全貌理解，並從中識別出可區分族群的<b>兩條核心軸線</b>與<b>四種用戶類型概述</b>。</p>
+      <div class="stepmeta">
+        <span class="pill ai">AI · Gemini Deep Research</span>
+        <span class="pill"><b>產出：</b>初步探索分析報告</span>
+        <span class="pill"><b>操作：</b>複製 prompt → 改寫關鍵字 → 執行</span>
+      </div>
+      <div class="prompt" data-prompt="p1"></div>
+
+      <h4>步驟 1-2　深度探索</h4>
+      <p>根據初步探索識別的兩條核心軸線建立十字象限，將族群拆為四種用戶類型並撰寫完整輪廓，作為一手資料蒐集的方向指引與劇本生成的素材。</p>
+      <div class="stepmeta">
+        <span class="pill ai">AI · Gemini Deep Research</span>
+        <span class="pill"><b>產出：</b>深度探索分析報告</span>
+        <span class="pill"><b>需上傳：</b>前階段文件 ×1</span>
+      </div>
+      <div class="prompt" data-prompt="p2"></div>
+
+      <!-- 2-2 -->
+      <h3 id="s2">2-2 第 2 階段：初級資料蒐集</h3>
+      <p>從社群平台擷取真實使用者的第一人稱敘事。此階段<b>嚴格限制 AI 僅進行資料擷取，不做主觀分析或改寫</b>，以保留原始語彙、句型與社群用語，確保後續劇本的語言風格具備真實性。</p>
+      <div class="note"><b>備援方案：</b>此階段 AI 擷取結果穩定性較低，可能因平台限制或搜尋變動而無法取得理想內容。若 AI 擷取失靈，研究者可改採手動方式自行蒐集符合條件的貼文，再交由 AI 進行語料整理，同樣可達成目標。</div>
+      <div class="stepmeta">
+        <span class="pill ai">AI · ChatGPT Deep Research</span>
+        <span class="pill"><b>產出：</b>社群貼文列表資料</span>
+        <span class="pill"><b>需上傳：</b>前階段文件 ×1</span>
+      </div>
+      <div class="prompt" data-prompt="p3"></div>
+
+      <!-- 2-3 -->
+      <h3 id="s3">2-3 第 3 階段：劇本生成</h3>
+      <p>整合前兩階段的探索報告、四種用戶輪廓與社群語料，依六維度框架生成一份 <b>7500 字</b>完整角色劇本，作為 AI Persona 的 System Instructions。</p>
+      <h4>六維度框架</h4>
+      <div class="dims">
+        <div class="dim"><div class="dn"><span>1</span>基本資料</div><p>確立角色身份參數，確保敘事一致性</p></div>
+        <div class="dim"><div class="dn"><span>2</span>世界觀</div><p>闡述信念系統，塑造詮釋傾向與決策邏輯</p></div>
+        <div class="dim"><div class="dn"><span>3</span>心理狀態</div><p>提供情感輪廓，使角色具備情緒深度與變化</p></div>
+        <div class="dim"><div class="dn"><span>4</span>行為模式</div><p>捕捉日常應對策略，使回應方式可被觀察</p></div>
+        <div class="dim"><div class="dn"><span>5</span>語言風格</div><p>建立可辨識的語言標記，使角色「聲音」穩定</p></div>
+        <div class="dim"><div class="dn"><span>6</span>日常情境</div><p>將角色置於具體情境，避免抽象並促進具身互動</p></div>
+      </div>
+      <div class="stepmeta">
+        <span class="pill ai">AI · Gemini 思考型回覆</span>
+        <span class="pill"><b>產出：</b>7500 字劇本</span>
+        <span class="pill"><b>需上傳：</b>前階段文件 ×3</span>
+      </div>
+      <div class="prompt" data-prompt="p4"></div>
+
+      <!-- 2-4 -->
+      <h3 id="s4">2-4 第 4 階段：AI 角色建立</h3>
+      <p>將完整劇本作為 System Instructions 輸入 GPTs 平台，並加入<b>行為限制指令</b>與<b>角色內化指令</b>，確保 AI Persona 維持自然的對話節奏、角色一致性與貼近真實使用者的表達。</p>
+      <div class="stepmeta">
+        <span class="pill ai">AI · ChatGPT 建立 GPTs</span>
+        <span class="pill"><b>產出：</b>永不下線的用戶 AI Persona</span>
+      </div>
+      <div class="prompt" data-prompt="p5"></div>
+
+      <!-- 2-5 -->
+      <h3 id="s5">2-5 建構成果：兩位對比 AI Persona</h3>
+      <div class="personas">
+        <div class="pcard emo">
+          <span class="tag">情緒型 · 外部確認型</span>
+          <h4>小安</h4>
+          <p>對投資充滿焦慮、容易受社群媒體與市場熱度影響。常在 PTT、Dcard、Reddit 尋求幫助，會策略性自稱「新手」或「股市小白」。</p>
+        </div>
+        <div class="pcard rat">
+          <span class="tag">理性型 · 內在信念型</span>
+          <h4>艾蜜莉</h4>
+          <p>堅定的理性型投資者，信奉約翰．柏格的低成本指數化投資。極度排斥 YOLO 和快速致富的賭博文化，將投資視為長達數十年的紀律修行。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 三、2A ============ -->
+    <section id="v2a">
+      <h2><span class="num">03</span>階段 2A：劇本方法論驗證</h2>
+      <p class="section-intro"><b>測試對象：</b>依六維度劇本建構的小安與艾蜜莉。<b>測試者：</b>6 位資深設計師（非研究參與者，確保客觀性）。<b>測試工具：</b>Google 表單《AI Persona 測試》。</p>
+      <div class="note">
+        <b>整合測試流程（同一場次連續執行）：</b><br>
+        ① <b>穩定性測試</b>——與小安進行 3 輪對話，每輪針對 6 題關鍵問題詢問（過程中可隨意聊天），3 輪後評分。<br>
+        ② <b>差異性測試</b>——與艾蜜莉進行 1 輪對話（同 6 題），完成後比較與小安的差異並評分。<br>
+        ③ <b>開放回饋</b>——完成 5 題開放題。<br>
+        測試者實際扮演「訪談者」與 AI Persona 對話，邊互動邊觀察（走查），最後完成量化評分（問卷）。
+      </div>
+
+      <h3 id="q2a">3-1 問卷</h3>
+      <h4>3-1-1 測試者篩選（N = 6）</h4>
+      <div class="tablecard"><table>
+        <thead><tr><th>篩選條件</th><th>說明</th></tr></thead>
+        <tbody>
+          <tr><td>非本研究參與者</td><td>不曾接觸劇本內容或預期結果</td></tr>
+          <tr><td>不具劇本先備知識</td><td>未事先閱讀小安／艾蜜莉的角色設定</td></tr>
+          <tr><td>自願參與並可完成全程</td><td>能完成三輪 + 一輪對話 + 量表填寫</td></tr>
+          <tr><td>對「與 AI 對話」有基本經驗</td><td>能順暢使用 ChatGPT / GPTs 介面</td></tr>
+        </tbody>
+      </table></div>
+
+      <h4>3-1-2 問卷題目（穩定性與差異性共用六題）</h4>
+      <p>穩定性評分標準：1 = 完全不一致 … 5 = 完全一致；差異性評分標準：1 = 完全一樣 … 5 = 非常不同。</p>
+      <div class="tablecard"><table>
+        <thead><tr><th>題號</th><th>提問</th><th>對應維度</th></tr></thead>
+        <tbody>
+          <tr><td class="c">Q1</td><td>可以簡單自我介紹一下嗎？</td><td>基本資料</td></tr>
+          <tr><td class="c">Q2</td><td>你平常下班後都做什麼？會看投資相關的東西嗎？</td><td>日常情境</td></tr>
+          <tr><td class="c">Q3</td><td>最近股市跌蠻多的，你有什麼感覺？</td><td>心理狀態</td></tr>
+          <tr><td class="c">Q4</td><td>如果朋友叫你趕快賣掉，你會怎麼做？</td><td>行為模式</td></tr>
+          <tr><td class="c">Q5</td><td>你覺得投資對你來說是什麼？為什麼想投資？</td><td>世界觀</td></tr>
+          <tr><td class="c">Q6</td><td>可以分享一個最近投資上印象深刻的事嗎？</td><td>語言風格</td></tr>
+        </tbody>
+      </table></div>
+      <h4>開放回饋題</h4>
+      <ol>
+        <li>在跟小安的 3 輪對話中，你覺得哪一題最不穩定？為什麼？</li>
+        <li>小安和艾蜜莉的回答中，你覺得哪一題差異最明顯？為什麼？</li>
+        <li>整體而言，你覺得這兩個角色最像真人的地方是什麼？</li>
+        <li>你覺得這兩個角色最假／最奇怪的地方是什麼？</li>
+        <li>其他想法或建議（選填）</li>
+      </ol>
+
+      <h3 id="walk">3-2 走查與觀察</h3>
+      <p>與問卷使用同一批測試者（同 3-1-1）。觀察記錄表涵蓋五個部分：</p>
+      <ul>
+        <li><b>A. 受測者基本資訊</b>——編號、測試日期、時長、設備環境。</li>
+        <li><b>B. 三輪對話觀察（小安｜穩定性）</b>——每題每輪記下回應的關鍵字／語氣／異常之處，加上一致性觀察筆記。</li>
+        <li><b>C. 一輪對話觀察（艾蜜莉｜差異性）</b>——記錄艾蜜莉回應重點與其和小安的差異。</li>
+        <li><b>D. 自由互動觀察</b>——是否脫稿／角色漂移、是否重複語氣標記（如「哈哈」「⋯」過度使用）、是否過度具體不自然、整體互動流暢度與卡點。</li>
+        <li><b>E. 走查總結</b>——角色穩定性、差異性、擬真性，以及作為設計研究工具的可能性。</li>
+      </ul>
+    </section>
+
+    <!-- ============ 四、2B ============ -->
+    <section id="v2b">
+      <h2><span class="num">04</span>階段 2B：AI 與真人比較</h2>
+      <p class="section-intro"><b>訪談形式：</b>設計方案驗證訪談（半結構化）。<b>訪談對象：</b>AI 小安、真人 A（26 歲社會新鮮人）、真人 B（24 歲社會新鮮人），真人受訪者經篩選符合「Z 世代情緒型投資者」輪廓。<b>條件：</b>每位約 65 分鐘，線上進行。</p>
+      <div class="note"><b>分析方法：</b>六維度語言編碼——C1 推理方式、C2 變化程度、C3 情境真實性、C4 情緒流動性、C5 敘事連貫性、C6 思考節奏，以 1–5 分量表標示強度。逐字稿編碼結果已於論文第四章完整呈現。</div>
+
+      <h3 id="guide">4-1 訪談訪綱（正式版）</h3>
+      <p><b>訪談目的：</b>探討三種情緒支持介面設計方案（A／B／C）在市場波動情境下，是否能有效協助 Z 世代 ETF 投資者穩定情緒、恢復理性思考、堅守長期投資計畫。</p>
+
+      <h4>4-1-1 訪談流程概述</h4>
+      <div class="tablecard"><table>
+        <thead><tr><th>階段</th><th>目的</th><th>時間</th><th>方法</th></tr></thead>
+        <tbody>
+          <tr><td>一、開場與背景</td><td>建立信任，蒐集投資背景</td><td class="c">10–15 分</td><td>半結構式訪談</td></tr>
+          <tr><td>二、情境引導</td><td>回想市場波動時的心理狀態</td><td class="c">5 分</td><td>情境描述</td></tr>
+          <tr><td>三、設計方案驗證</td><td>驗證三介面的理解度與有效性</td><td class="c">30 分</td><td>逐一展示與提問</td></tr>
+          <tr><td>四、整體比較與反思</td><td>探索偏好與行為傾向</td><td class="c">10 分</td><td>對照討論</td></tr>
+          <tr><td>五、結尾與回饋</td><td>收斂洞察與建議</td><td class="c">5 分</td><td>開放式提問</td></tr>
+        </tbody>
+      </table></div>
+
+      <h4>4-1-2 訪談題綱</h4>
+
+      <div class="guide-block">
+        <h4>（一）開場與背景了解</h4>
+        <p><b>1. 受訪者基本資料：</b>年齡範圍（20–24／25–29／30–34）、職業或工作性質、投資經驗年數、初次接觸 ETF 的時間與原因。</p>
+        <p><b>2. 投資行為與習慣：</b>常用投資平台或券商、ETF 組合的決策方式（自行研究或依循社群／意見領袖）、檢視投資狀況的頻率、是否有明確投資目標、市場波動時常見的行動反應。</p>
+        <p><b>3. 情緒與風險感受：</b>自評理性或情緒型投資者、市場下跌時的焦慮感及持續時間、是否曾因恐慌過早賣出或後悔未進場、希望工具在此情況下提供何種支持。</p>
+        <div class="obs"><b>觀察重點：</b>投資成熟度與經驗層級、投資動機、決策依據（理性／情緒）、常用情緒詞彙（焦慮、後悔、FOMO、冷靜等）。</div>
+      </div>
+
+      <div class="guide-block">
+        <h4>（二）情境引導</h4>
+        <div class="quote">「請想像你今天打開投資 App，發現你的 ETF 組合下跌了 10%。帳戶少了幾萬元，你開始懷疑是否應該賣出。此時，App 彈出提示『市場正在劇烈波動』。接下來，我將展示三種不同的回應介面，請你逐一分享感受。」</div>
+        <div class="obs"><b>觀察重點：</b>情緒表現是否出現緊張、焦慮或理性對抗反應；是否出現衝動交易的傾向。</div>
+      </div>
+
+      <div class="guide-block">
+        <h4>（三）設計方案驗證</h4>
+        <p>逐一展示三種設計方案，了解其在「安定情緒、重拾理性」層面的有效性、接受度與信任感。</p>
+
+        <h4>方案 A：找回信心（歷史回測型介面）<span class="flow-tag">flow3</span></h4>
+        <p><b>說明：</b>透過歷史事件（如 2018 年貿易戰、2020 年疫情崩盤）的跌幅與回穩數據，提醒使用者長期投資的穩定性。</p>
+        <ol>
+          <li>第一眼看到此畫面時的感受是什麼？</li>
+          <li>這些數據是否帶來安撫或信任感？</li>
+          <li>是否覺得此資訊過於冷冰冰或理性？</li>
+          <li>若實際出現在投資 App 中，是否會主動查看？</li>
+          <li>這樣的介面是否能減少你在恐慌時賣出的衝動？</li>
+        </ol>
+        <div class="obs"><b>觀察重點：</b>理性資訊是否能產生情緒安定；使用者對「歷史比對」與「長期觀點」的信任程度。</div>
+
+        <h4>方案 B：深呼吸（情緒重置型介面）<span class="flow-tag">flow2</span></h4>
+        <p><b>說明：</b>以呼吸練習介面協助使用者暫停操作，冷靜下來後再重新進行投資判斷。</p>
+        <ol>
+          <li>看到此畫面時，是否願意跟著進行呼吸練習？</li>
+          <li>此設計給你的感覺是有幫助還是抽象？</li>
+          <li>若此功能出現在投資 App 中，會不會覺得突兀？</li>
+          <li>是否希望加入其他元素（語音、引導文字、音樂等）？</li>
+          <li>這樣的介入方式是否能幫助你平復焦慮？</li>
+        </ol>
+        <div class="obs"><b>觀察重點：</b>對「非投資性互動」的接受度；是否產生被理解或被教導的感受；對放鬆介面的真實參與意願。</div>
+
+        <h4>方案 C：願景板（目標回想型介面）<span class="flow-tag">flow1</span></h4>
+        <p><b>說明：</b>以使用者先前設定的長期投資目標（如提早退休、財務自由等）作為視覺提示，協助使用者回想初衷。</p>
+        <ol>
+          <li>看到這些內容時的第一反應為何？</li>
+          <li>是否能喚起你當初的投資理由與動機？</li>
+          <li>覺得這樣的語氣太感性還是恰當？</li>
+          <li>若此內容由系統自動回顯（根據你曾輸入的文字），能接受嗎？</li>
+          <li>認為畫面中還可增加哪些元素或改進？</li>
+        </ol>
+        <div class="obs"><b>觀察重點：</b>情緒共鳴與真實感；對自我敘事型介入的接受度；「被理解」或「自我提醒」的心理反應。</div>
+      </div>
+
+      <div class="guide-block">
+        <h4>（四）整體比較與反思</h4>
+        <div class="quote">「你剛看過三種不同的設計：A 是透過歷史數據安撫理性，B 是透過呼吸練習安撫情緒，C 是透過回想初衷喚回動機。想請你聊聊，哪一種最貼近你的需求與感受？」</div>
+        <ol>
+          <li>哪個設計最讓你覺得被理解？</li>
+          <li>哪個設計最能幫助你冷靜？</li>
+          <li>哪個設計最可能影響你的實際行動？</li>
+          <li>三者之間是否可結合？如何整合？</li>
+          <li>若你要為自己設計一個「定心錨」功能，會是什麼形式？</li>
+        </ol>
+        <div class="obs"><b>觀察重點：</b>偏好傾向（理性／情緒／自我反思導向）；對情緒干預與理性資訊平衡的期待。</div>
+      </div>
+
+      <div class="guide-block">
+        <h4>（五）結尾與收斂</h4>
+        <ol>
+          <li>若三個功能只能保留一個，你會選哪一個？為什麼？</li>
+          <li>是否希望此類功能出現在日常投資 App 中？</li>
+          <li>若要提升「信任感」或「陪伴感」，你會建議怎麼做？</li>
+        </ol>
+        <div class="obs"><b>觀察重點：</b>最終偏好方向；實際採用可能性；改進建議與潛在設計方向。</div>
+      </div>
+    </section>
+
+    <!-- ============ 五、附註 ============ -->
+    <section id="notes">
+      <h2><span class="num">05</span>附註</h2>
+      <ol class="footnotes">
+        <li>階段一的方法論互動流程網站：<a href="https://v0-ai-persona.vercel.app/" target="_blank" rel="noopener">v0-ai-persona.vercel.app</a>（包含每步驟可一鍵複製的 prompt 模板）。</li>
+        <li>階段 2A 的「問卷」與「走查與觀察」實際為同一場次整合執行（測試者邊與 AI 對話、邊觀察、最後填表）；本文件依結構需求拆為兩節呈現。</li>
+        <li>階段 2B 訪談的逐字稿編碼結果（六維度語言分析）已於論文第四章完整呈現，本文件未重複收錄。</li>
+        <li>三個設計方案對應 flow1（願景板）／flow2（深呼吸）／flow3（找回信心）三個原型；訪談時依 A → B → C 順序展示。</li>
+        <li>第二階段（社群資料蒐集）若 AI Deep Research 擷取失效，可改採手動蒐集後交由 AI 整理，不影響後續流程。</li>
+      </ol>
+    </section>
+
+    <footer>
+      <b>AI Persona 能取代真人訪談嗎？探討 AI Persona 與真人受訪者的差異對設計研究的影響</b><br>
+      研究方法附錄 · 簡潔安 · 國立臺灣科技大學設計系碩士班 · 指導教授 唐玄輝
+    </footer>
+
+  </div>
+  </main>
+</div>
+
+<script>
+/* ===== prompt data (kept in JS to avoid HTML-escaping issues) ===== */
+const PROMPTS = {
+  p1: {label:"步驟 1-1 · 初步探索 prompt", text:
+`# 角色設定
+你是一位擁有 10 年以上經驗的資深研究員，專精於使用者行為與心理研究，
+尤其擅長分析特定族群的行為模式與決策邏輯。你擅長將複雜資訊整理成結構清晰、
+易於閱讀的研究報告。
+
+# 任務目標
+針對「[目標族群]的[研究主題]」進行系統性研究，產出一份探索性研究報告。
+
+# 研究範圍
+請涵蓋以下面向：
+## 1. 整體趨勢（Overall Trends）
+- [目標族群]接觸此領域的時間點與背景
+- 常見的選擇與偏好
+- 參與程度與頻率
+## 2. 動機（Motivations）
+- 為什麼投入這個領域
+- 主要目標與期待
+- 受到哪些資訊來源或人物影響
+## 3. 常見行為模式（Common Behavioral Patterns）
+- 日常相關行為的頻率與情境
+- 面對不確定性時的典型反應
+- 常見的決策流程與習慣
+## 4. 心理特徵（Psychological Characteristics）
+- 信心來源（外部驗證 vs 內在信念）
+- 面對壓力或挫折時的心理狀態
+- 常見的情緒反應與調節方式
+## 5. 社群影響（Community Influence）
+- 相關社群平台的討論文化
+- 社群對行為與決策的正面與負面影響
+- 常見的社群用語與表達方式
+
+# 輸出格式
+請以結構化的研究報告格式呈現，包含：
+- 執行摘要（Executive Summary）
+- 各面向的詳細分析
+- 關鍵發現（Key Findings）——請標註兩條最具區辨力的核心軸線，
+  說明每條軸線的意義，並描述這兩條軸線交叉形成的四種用戶類型概述
+- 資料來源列表
+
+# 注意事項
+- 請進行深度搜尋，參考多個來源交叉驗證
+- 優先引用官方數據、研究報告、新聞報導、學術文獻
+- 標註每項發現的資料來源
+- 以繁體中文撰寫`},
+  p2: {label:"步驟 1-2 · 深度探索 prompt", text:
+`# 任務目標
+根據附件探索報告中的關鍵發現，以下列兩條核心軸線建立十字象限，
+產出四種用戶類型的完整輪廓。
+- 軸線一：[軸線名稱]（[一端] vs. [另一端]）
+- 軸線二：[軸線名稱]（[一端] vs. [另一端]）
+
+# 輸出要求
+請針對以下四種用戶類型，各自描述：
+## 象限一：[軸線一的一端] × [軸線二的一端]
+## 象限二：[軸線一的一端] × [軸線二的另一端]
+## 象限三：[軸線一的另一端] × [軸線二的一端]
+## 象限四：[軸線一的另一端] × [軸線二的另一端]
+
+每種類型請涵蓋：
+- 這類人的典型背景與生活狀態
+- 核心信念與價值觀
+- 主要的情緒特徵與心理狀態
+- 典型的行為習慣與決策方式
+- 說話方式與常用語彙
+- 日常生活中與 [研究主題] 相關的具體場景
+
+# 注意事項
+- 四種類型之間需有明確的對比與區辨性
+- 為每種類型命名，名稱需直覺反映其特徵
+- 描述需具體，避免抽象概括
+- 以繁體中文撰寫`},
+  p3: {label:"第 2 階段 · 社群資料蒐集 prompt", text:
+`# 角色設定
+你是一位精確的資料擷取助手，專門從社群平台擷取原始用戶發言。
+你的工作原則是：只擷取，不分析；只記錄，不改寫。
+
+# 任務目標
+根據以下用戶輪廓，從相關社群平台擷取該類型用戶的第一人稱真實敘事，
+捕捉他們的真實語言、情緒表達與心理狀態。
+
+# 用戶輪廓
+[從步驟 B 貼上所選用戶類型的完整描述]
+
+# 搜尋範圍
+請根據上述用戶輪廓，自行推斷：
+- 該類型用戶最活躍的社群平台與看板
+- 最可能的搜尋關鍵字組合，以「主題 + 情緒詞」和「主題 + 行為詞」進行交叉搜尋
+
+# 擷取標準
+## 必須擷取的內容
+1. 情緒表達：包含明顯情緒的語句（焦慮、恐慌、後悔、興奮、滿足等）
+2. 內心衝突：理性與情緒拉扯的敘述
+3. 行為描述：具體的日常行為與習慣
+4. 社群互動：尋求認同或外部確認的語句
+5. 特殊語彙與社群用語：該社群特有的慣用語、流行語、迷因
+
+# 輸出格式
+---
+## 【貼文 1】
+**來源**：[平台名稱 + 看板]
+**原文摘錄**：
+> （直接貼上原始發言，保留原本的標點、語氣詞、錯字）
+**情緒標籤**：焦慮 / 恐慌 / 後悔 / 自我懷疑 / 尋求認同 / 興奮 / 滿足（可複選）
+**特殊語彙**：（如有社群用語請標註）
+---
+
+# 嚴格限制
+- 禁止改寫：保留原始發言的所有細節，包括錯字、語氣詞
+- 禁止分析：不要加入你的詮釋或評論
+- 禁止美化：不要修正文法或讓語句更通順
+- 禁止捏造：只擷取實際搜尋到的內容，找不到就回報找不到
+
+# 目標數量
+請擷取 30-50 則具有豐富情緒表達的第一人稱敘事。
+
+# 品質優先於數量
+寧可擷取 20 則高品質、情緒濃度高的內容，也不要 50 則平淡無感的發言。
+優先選擇：
+- 有明顯情緒起伏的
+- 有內心衝突描述的
+- 有具體行為細節的
+- 有社群特殊語彙的`},
+  p4: {label:"第 3 階段 · 六維度劇本生成 prompt", text:
+`# 角色設定
+你是一位專業的 AI Persona 劇本撰寫師，擅長將研究資料轉化為具有深度與
+一致性的角色劇本。你的任務是創建能夠在長時間對話中維持穩定人格表現的 AI 角色。
+
+# 任務目標
+根據提供的三份資料，建構一份完整的六維度角色劇本。
+此劇本將作為 AI Persona 的 System Instructions，使角色能在對話中展現：
+- 一致性：跨對話維持穩定的人格特質
+- 可辨別性：與其他角色有明確的差異
+- 真實性：語言風格貼近真實使用者
+
+# 輸入資料
+1. 探索報告（來自步驟 A 的初步探索結果）
+2. 四種用戶輪廓（來自步驟 B 的十字象限分析）
+3. 社群貼文語料（來自步驟 C 的擷取結果）
+請針對以下用戶類型撰寫劇本：[填入所選的象限名稱]
+[在對話窗中，上傳文件]
+
+# 輸出格式
+請依據以下六維度框架撰寫完整劇本：
+
+## 1. 基本資料（Persona Definition）
+姓名與年齡、職業與工作內容、教育背景、經濟狀況、
+與研究主題相關的經驗程度、家庭或生活背景。
+
+## 2. 世界觀（Worldview）
+核心價值觀與人生信念、對研究主題的基本態度、如何解讀外部資訊、
+面對風險的態度、影響決策的關鍵因素。
+
+## 3. 心理狀態（Emotional Tendencies）
+整體情緒基調、情緒敏感度、主要焦慮來源、情緒觸發條件、
+情緒調節方式、內心常見的自我對話。
+
+## 4. 行為模式（Behavioral Patterns）
+日常習慣與例行行為、資訊獲取的頻率與管道、面對不確定性時的典型反應、
+決策過程與速度、壓力下的應對行為。
+
+## 5. 語言風格（Linguistic Style）
+整體語氣、說話節奏、常用詞彙列表（10-15 個）、常用句型結構、口頭禪、
+社群用語、表達不確定與情緒時的說法。
+撰寫此維度時，請大量參考社群貼文語料中的真實語彙。
+
+## 6. 日常情境（Everyday Scenario Storyboards）
+請提供 3-4 個場景，每個場景包含：
+場景名稱與時間點、環境描述、角色在做什麼、角色的內心獨白、可能的對話片段。
+
+# 字數要求
+劇本總字數請達到 7500 字，確保每個維度都有充分的細節與深度。
+
+# 品質檢核
+完成劇本後，請確認：
+□ 六維度之間邏輯一致，無互相矛盾
+□ 與其他三種用戶類型有明確區辨性
+□ 語言風格融入真實語料，具備真實性
+□ 細節足夠具體，避免模糊或抽象描述
+□ 整體設定合理，符合目標族群特徵
+□ 禁止視覺化描述文字，例如：（點點頭）`},
+  p5: {label:"第 4 階段 · GPTs 部署指令", text:
+`[請將第三階段產出的完整劇本貼於此處]
+
+---
+
+# 行為限制指令
+
+# 規則
+1. 10 次回應中，有 3 次回應不超過 100 字，模擬自然對話節奏
+2. 禁止提及「知識檔案」「報告」「文件」「你被給予的資訊」等字眼
+3. 所有背景資料視為你的記憶和經驗，以第一人稱表達
+4. 禁止連續反問
+5. 嚴格遵守角色的心理狀態、行為模式與語言風格設定
+
+---
+
+# 角色內化指令
+
+# 角色內化
+你是 [角色名稱]。你的回應基於上述背景和行為模式，
+就像這些是你自己的經歷。讓使用者感覺在跟真實的 [角色名稱] 對話。`}
+};
+
+/* render prompt blocks */
+document.querySelectorAll('.prompt[data-prompt]').forEach(el=>{
+  const p = PROMPTS[el.dataset.prompt];
+  if(!p) return;
+  const pre = document.createElement('pre');
+  pre.textContent = p.text;
+  const head = document.createElement('div');
+  head.className = 'prompt-head';
+  head.innerHTML = `<span class="lbl">${p.label}</span>`;
+  const btn = document.createElement('button');
+  btn.className = 'copy-btn';
+  btn.innerHTML = '📋 複製';
+  btn.onclick = ()=>{
+    navigator.clipboard.writeText(p.text).then(()=>{
+      btn.classList.add('done'); btn.innerHTML = '✓ 已複製';
+      setTimeout(()=>{btn.classList.remove('done'); btn.innerHTML='📋 複製';}, 1800);
+    });
+  };
+  head.appendChild(btn);
+  el.appendChild(head); el.appendChild(pre);
+});
+
+/* mobile toc toggle */
+function toggleToc(){
+  document.getElementById('toc').classList.toggle('open');
+  document.getElementById('scrim').classList.toggle('show');
+}
+document.querySelectorAll('#nav a').forEach(a=>a.addEventListener('click',()=>{
+  if(window.innerWidth<=1000) toggleToc();
+}));
+
+/* scrollspy */
+const navlinks = [...document.querySelectorAll('#nav a')];
+const map = {};
+navlinks.forEach(a=>{const id=a.getAttribute('href').slice(1); map[id]=a;});
+const spy = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      navlinks.forEach(a=>a.classList.remove('active'));
+      const id = e.target.id;
+      if(map[id]) map[id].classList.add('active');
+    }
+  });
+},{rootMargin:'-15% 0px -75% 0px'});
+document.querySelectorAll('section[id], h3[id]').forEach(s=>spy.observe(s));
+</script>
+</body>
+</html>
