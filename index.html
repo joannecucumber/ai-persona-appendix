@@ -741,16 +741,6 @@ document.querySelectorAll('.prompt[data-prompt]').forEach(el=>{
   const head = document.createElement('div');
   head.className = 'prompt-head';
   head.innerHTML = `<span class="lbl">${p.label}</span>`;
-  const btn = document.createElement('button');
-  btn.className = 'copy-btn';
-  btn.innerHTML = '📋 複製';
-  btn.onclick = ()=>{
-    navigator.clipboard.writeText(p.text).then(()=>{
-      btn.classList.add('done'); btn.innerHTML = '✓ 已複製';
-      setTimeout(()=>{btn.classList.remove('done'); btn.innerHTML='📋 複製';}, 1800);
-    });
-  };
-  head.appendChild(btn);
   el.appendChild(head); el.appendChild(pre);
 });
 
